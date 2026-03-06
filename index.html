@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Race</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0F0E0C; --surface:#171613; --surface-2:#1E1C19;
+    --border:rgba(255,255,255,0.07); --border-strong:rgba(255,255,255,0.14);
+    --text:#EDE8DF; --text-dim:rgba(237,232,223,0.45); --text-mid:rgba(237,232,223,0.7);
+    --immigration:#C4541A; --immigration-soft:rgba(196,84,26,0.12);
+    --travel:#2A7A6A; --travel-soft:rgba(42,122,106,0.12);
+    --gantt:#B8962E; --gantt-soft:rgba(184,150,46,0.12);
+    --goals:#7A5A9A; --goals-soft:rgba(122,90,154,0.12);
+    --warn:#E53935;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;min-height:100vh;line-height:1.5;}
+  /* HEADER */
+  .header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:50;}
+  .header-left{display:flex;align-items:baseline;gap:20px;}
+  .logo{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:300;letter-spacing:0.15em;text-transform:uppercase;}
+  .logo span{color:var(--immigration);}
+  .header-date{font-size:9px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;}
+  .header-right{display:flex;align-items:center;gap:20px;}
+  .avatar-group{display:flex;}
+  .avatar{width:28px;height:28px;border-radius:50%;border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;}
+  .avatar-1{background:var(--immigration);color:#fff;margin-right:-7px;z-index:2;}
+  .avatar-2{background:var(--travel);color:#fff;}
+  .sync-btn{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;cursor:pointer;transition:color 0.2s;background:none;border:none;font-family:inherit;}
+  .sync-btn:hover{color:var(--text);}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--travel);animation:pulse 2s ease-in-out infinite;}
+  .dot.loading{background:var(--gantt);animation:none;opacity:0.7;}
+  .dot.error{background:var(--warn);animation:none;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  /* STATUS BAR */
+  .status-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:22px;font-size:9px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;overflow-x:auto;}
+  .status-item strong{color:var(--text-mid);}
+  .status-item.alert{color:var(--warn);}
+  .status-item.alert strong{color:var(--warn);}
+  .status-divider{width:1px;height:12px;background:var(--border-strong);flex-shrink:0;}
+  /* GRID */
+  .dashboard{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);}
+  /* MODULE */
+  .module{background:var(--surface);padding:26px;position:relative;overflow:hidden;animation:fadeIn 0.5s ease forwards;opacity:0;}
+  .module:nth-child(1){animation-delay:0.05s;} .module:nth-child(2){animation-delay:0.12s;}
+  .module:nth-child(3){animation-delay:0.19s;} .module:nth-child(4){animation-delay:0.26s;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .module::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .module-immigration::before{background:var(--immigration);}
+  .module-travel::before{background:var(--travel);}
+  .module-gantt::before{background:var(--gantt);}
+  .module-goals::before{background:var(--goals);}
+  .module-label{display:flex;align-items:center;gap:10px;margin-bottom:22px;}
+  .module-tag{font-size:8px;letter-spacing:0.22em;text-transform:uppercase;padding:3px 8px;border-radius:1px;}
+  .tag-immigration{background:var(--immigration-soft);color:var(--immigration);}
+  .tag-travel{background:var(--travel-soft);color:var(--travel);}
+  .tag-gantt{background:var(--gantt-soft);color:var(--gantt);}
+  .tag-goals{background:var(--goals-soft);color:var(--goals);}
+  .module-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;letter-spacing:0.03em;flex:1;}
+  .last-sync{font-size:8px;color:var(--text-dim);letter-spacing:0.08em;}
+  /* SHIMMER */
+  .shimmer{background:linear-gradient(90deg,var(--surface-2) 25%,rgba(255,255,255,0.04) 50%,var(--surface-2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:2px;height:13px;margin-bottom:9px;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  /* ERROR */
+  .error-msg{padding:24px;text-align:center;color:var(--text-dim);font-size:10px;letter-spacing:0.08em;line-height:2;}
+  .error-msg a{color:var(--immigration);text-decoration:none;}
+  .error-msg strong{color:var(--text-mid);}
+  /* IMMIGRATION */
+  .imm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+  .country-block{background:var(--surface-2);border:1px solid var(--border);padding:14px;border-radius:2px;}
+  .country-flag{font-size:17px;margin-bottom:7px;}
+  .country-name{font-size:8.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
+  .country-days{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;line-height:1;margin-bottom:3px;}
+  .country-days.warn{color:var(--immigration);} .country-days.ok{color:var(--travel);}
+  .country-limit{font-size:8.5px;color:var(--text-dim);}
+  .progress-bar{height:3px;background:var(--border-strong);border-radius:2px;margin-top:9px;overflow:hidden;}
+  .progress-fill{height:100%;border-radius:2px;transition:width 0.8s ease;}
+  .fill-warn{background:var(--immigration);} .fill-ok{background:var(--travel);}
+  .imm-log-label{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:9px;border-top:1px solid var(--border);padding-top:14px;}
+  .imm-entry{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);font-size:9.5px;}
+  .imm-entry:last-child{border-bottom:none;}
+  .imm-flag{font-size:12px;} .imm-who{color:var(--text-mid);min-width:44px;} .imm-dates{color:var(--text-dim);flex:1;}
+  .imm-dur{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:300;}
+  /* TRAVEL */
+  .travel-timeline{position:relative;padding-left:18px;margin-bottom:18px;}
+  .travel-timeline::before{content:'';position:absolute;left:3px;top:8px;bottom:8px;width:1px;background:var(--border-strong);}
+  .trip-item{position:relative;margin-bottom:18px;padding-left:14px;}
+  .trip-item::before{content:'';position:absolute;left:-15px;top:5px;width:8px;height:8px;border-radius:50%;border:1px solid var(--travel);background:var(--bg);}
+  .trip-item.current::before{background:var(--travel);}
+  .trip-date{font-size:8.5px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:2px;}
+  .trip-dest{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;margin-bottom:3px;}
+  .trip-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .trip-tag{padding:1px 6px;border-radius:1px;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;}
+  .trip-tag-work{background:var(--gantt-soft);color:var(--gantt);}
+  .trip-tag-personal{background:var(--travel-soft);color:var(--travel);}
+  .trip-tag-both{background:var(--goals-soft);color:var(--goals);}
+  .trip-tag-holiday{background:var(--travel-soft);color:var(--travel);}
+  .trip-tag-current{background:var(--immigration-soft);color:var(--immigration);}
+  .trip-notes{font-size:8.5px;color:var(--text-dim);font-style:italic;}
+  .travel-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;border-top:1px solid var(--border);padding-top:14px;}
+  .stat-block{background:var(--surface-2);padding:10px;border-radius:2px;text-align:center;}
+  .stat-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--travel);display:block;}
+  .stat-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);}
+  /* GANTT */
+  .gantt-header-row{display:grid;margin-bottom:5px;}
+  .gantt-month{font-size:7.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);text-align:center;}
+  .gantt-row{display:flex;align-items:center;margin-bottom:9px;gap:10px;}
+  .gantt-name{font-size:9.5px;color:var(--text-mid);width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .gantt-track{flex:1;height:22px;background:var(--surface-2);border-radius:2px;position:relative;overflow:hidden;}
+  .gantt-bar{position:absolute;height:100%;border-radius:2px;display:flex;align-items:center;padding:0 7px;font-size:8px;letter-spacing:0.06em;white-space:nowrap;overflow:hidden;}
+  .gantt-today{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.25);z-index:2;}
+  .gantt-today::before{content:'NOW';position:absolute;top:-14px;left:3px;font-size:6.5px;letter-spacing:0.15em;color:rgba(255,255,255,0.3);}
+  .gantt-legend{display:flex;gap:14px;margin-top:14px;border-top:1px solid var(--border);padding-top:12px;flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:8.5px;color:var(--text-dim);}
+  .legend-dot{width:8px;height:8px;border-radius:1px;}
+  .status-active{background:rgba(196,84,26,0.6);color:#fff;}
+  .status-planning{background:rgba(184,150,46,0.6);color:#fff;}
+  .status-ongoing{background:rgba(122,90,154,0.6);color:#fff;}
+  .status-upcoming{background:rgba(42,122,106,0.45);color:rgba(237,232,223,0.8);}
+  .status-complete{background:rgba(255,255,255,0.08);color:var(--text-dim);}
+  .status-hold{background:rgba(255,255,255,0.05);color:var(--text-dim);}
+  /* GOALS */
+  .goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .goal-card{background:var(--surface-2);border:1px solid var(--border);padding:14px;border-radius:2px;position:relative;overflow:hidden;}
+  .goal-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--goals);opacity:0.5;transform-origin:left;transition:transform 0.7s ease;}
+  .goal-horizon{font-size:7.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--goals);margin-bottom:7px;}
+  .goal-title{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:400;line-height:1.3;margin-bottom:6px;}
+  .goal-owner{font-size:8px;color:var(--text-dim);letter-spacing:0.08em;margin-bottom:5px;}
+  .goal-footer{display:flex;justify-content:space-between;font-size:8.5px;}
+  .goal-pct{color:var(--goals);font-weight:500;}
+  .goal-next{color:var(--text-dim);font-style:italic;font-size:8px;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .goal-add{background:transparent;border:1px dashed var(--border-strong);padding:14px;border-radius:2px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:8.5px;letter-spacing:0.15em;text-transform:uppercase;gap:6px;}
+  /* BOTTOM */
+  .bottom-bar{background:var(--surface);border-top:1px solid var(--border);padding:11px 32px;display:flex;align-items:center;font-size:8.5px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;}
+  .sheets-badge{margin-left:auto;display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--border);border-radius:1px;font-size:8px;letter-spacing:0.1em;}
+  .sheets-icon{width:9px;height:11px;background:#34A853;border-radius:1px;display:inline-block;}
+  @media(max-width:860px){.dashboard{grid-template-columns:1fr;}.imm-grid{grid-template-columns:1fr 1fr;}.goals-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="logo">Life <span>Race</span></div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+  <div class="header-right">
+    <button class="sync-btn" onclick="loadAll()">
+      <span class="dot" id="syncDot"></span>
+      <span id="syncLabel">Synced</span>
+    </button>
+    <div class="avatar-group">
+      <div class="avatar avatar-1">S</div>
+      <div class="avatar avatar-2">J</div>
+    </div>
+  </div>
+</div>
+<div class="status-bar" id="statusBar">
+  <div class="status-item">Loading your data...</div>
+</div>
+<div class="dashboard">
+  <div class="module module-immigration">
+    <div class="module-label">
+      <span class="module-tag tag-immigration">Immigration</span>
+      <span class="module-title">Day Tracker</span>
+      <span class="last-sync" id="immSync"></span>
+    </div>
+    <div id="immContent">
+      <div class="shimmer" style="width:100%;height:88px;margin-bottom:12px"></div>
+      <div class="shimmer" style="width:80%"></div><div class="shimmer" style="width:60%"></div>
+    </div>
+  </div>
+  <div class="module module-travel">
+    <div class="module-label">
+      <span class="module-tag tag-travel">Travel</span>
+      <span class="module-title">What's Coming</span>
+      <span class="last-sync" id="travelSync"></span>
+    </div>
+    <div id="travelContent">
+      <div class="shimmer" style="width:70%"></div>
+      <div class="shimmer" style="width:90%"></div>
+      <div class="shimmer" style="width:55%"></div>
+    </div>
+  </div>
+  <div class="module module-gantt">
+    <div class="module-label">
+      <span class="module-tag tag-gantt">Business</span>
+      <span class="module-title">Project Arc</span>
+      <span class="last-sync" id="ganttSync"></span>
+    </div>
+    <div id="ganttContent">
+      <div class="shimmer" style="width:100%;height:22px;margin-bottom:9px"></div>
+      <div class="shimmer" style="width:100%;height:22px;margin-bottom:9px"></div>
+      <div class="shimmer" style="width:100%;height:22px;margin-bottom:9px"></div>
+    </div>
+  </div>
+  <div class="module module-goals">
+    <div class="module-label">
+      <span class="module-tag tag-goals">Life Goals</span>
+      <span class="module-title">The Long Game</span>
+      <span class="last-sync" id="goalsSync"></span>
+    </div>
+    <div id="goalsContent">
+      <div class="shimmer" style="width:100%;height:80px;margin-bottom:10px"></div>
+      <div class="shimmer" style="width:100%;height:80px"></div>
+    </div>
+  </div>
+</div>
+<div class="bottom-bar">
+  <span id="bottomLeft">Loading...</span>
+  <div class="sheets-badge">
+    <span class="sheets-icon"></span>
+    Google Sheets
+  </div>
+</div>
+<script>
+const SHEET_ID = '1gsTrgf-GvBFCwSzpoacBqti5JS8JfvwlRWJtqR7LKK0';
+const LIMIT = 182;
+const today = new Date();
+today.setHours(0,0,0,0);
+function parseDate(v) {
+  if (!v) return null;
+  const m = String(v).match(/Date\((\d+),(\d+),(\d+)\)/);
+  if (m) return new Date(+m[1], +m[2], +m[3]);
+  const d = new Date(v);
+  return isNaN(d) ? null : d;
+}
+function fmt(d) {
+  if (!d) return '';
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
+}
+function diff(a,b) {
+  if (!a||!b) return 0;
+  return Math.max(0, Math.round((b-a)/86400000));
+}
+async function fetchSheet(tab) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('fetch failed');
+  const text = await res.text();
+  const json = JSON.parse(text.match(/setResponse\(([\s\S]*)\)/)[1]);
+  if (!json.table) throw new Error('no table');
+  const rows = [];
+  (json.table.rows||[]).forEach((row,i) => {
+    if (i < 4) return; // skip 4 header rows
+    const cells = (row.c||[]).map(c=>c?c.v:null);
+    if (cells.some(c=>c!==null&&c!=='')) rows.push(cells);
+  });
+  return rows;
+}
+function errHTML(msg) {
+  return `<div class="error-msg">${msg}<br><br>
+    Make sure the Sheet is set to <strong>Anyone with the link — Viewer</strong>.<br>
+    <a href="https://docs.google.com/spreadsheets/d/${SHEET_ID}" target="_blank">Open Sheet &#x2192;</a></div>`;
+}
+function setSyncing() { document.getElementById('syncDot').className='dot loading'; document.getElementById('syncLabel').textContent='Syncing...'; }
+function setSynced()  { document.getElementById('syncDot').className='dot'; document.getElementById('syncLabel').textContent='Synced'; }
+function setError()   { document.getElementById('syncDot').className='dot error'; document.getElementById('syncLabel').textContent='Error — check sharing'; }
+// ── IMMIGRATION ──────────────────────────────────────────────────────────
+async function loadImmigration() {
+  try {
+    const rows = await fetchSheet('🛂 Immigration');
+    // cols: 1=Person,2=CountryText,3=CountryDrop,4=Arrival,5=Departure,6=Days,7=Notes
+    const totals = {'United States':0,'Canada':0};
+    const stays = [];
+    rows.forEach(r => {
+      const person  = r[1]||'';
+      const country = r[3]||r[2]||'';
+      const arrival = parseDate(r[4]);
+      const depart  = parseDate(r[5]);
+      if (!arrival) return;
+      const dep = depart||today;
+      const days = diff(arrival, dep);
+      if (arrival.getFullYear()===today.getFullYear() && totals[country]!==undefined) {
+        totals[country]+=days;
+      }
+      stays.push({person,country,arrival,depart,days,notes:r[7]||''});
+    });
+    const usUsed = Math.round(totals['United States']);
+    const caUsed = Math.round(totals['Canada']);
+    const usPct  = usUsed/LIMIT;
+    const caPct  = caUsed/LIMIT;
+    const recent = stays.filter(s=>s.arrival).sort((a,b)=>b.arrival-a.arrival).slice(0,4);
+    let html = `<div class="imm-grid">
+      <div class="country-block">
+        <div class="country-flag">&#x1F1FA;&#x1F1F8;</div>
+        <div class="country-name">United States</div>
+        <div class="country-days ${usPct>0.8?'warn':'ok'}">${usUsed}</div>
+        <div class="country-limit">of ${LIMIT} days this year</div>
+        <div class="progress-bar"><div class="progress-fill ${usPct>0.8?'fill-warn':'fill-ok'}" style="width:${Math.min(usPct*100,100).toFixed(1)}%"></div></div>
+      </div>
+      <div class="country-block">
+        <div class="country-flag">&#x1F1E8;&#x1F1E6;</div>
+        <div class="country-name">Canada</div>
+        <div class="country-days ${caPct>0.8?'warn':'ok'}">${caUsed}</div>
+        <div class="country-limit">of ${LIMIT} days this year</div>
+        <div class="progress-bar"><div class="progress-fill ${caPct>0.8?'fill-warn':'fill-ok'}" style="width:${Math.min(caPct*100,100).toFixed(1)}%"></div></div>
+      </div>
+    </div>
+    <div class="imm-log-label">Recent stays</div>`;
+    recent.forEach(s => {
+      const flag = s.country.includes('Canada')?'&#x1F1E8;&#x1F1E6;':s.country.includes('United')?'&#x1F1FA;&#x1F1F8;':'&#x1F30D;';
+      html += `<div class="imm-entry">
+        <span class="imm-flag">${flag}</span>
+        <span class="imm-who">${s.person||'&#x2014;'}</span>
+        <span class="imm-dates">${fmt(s.arrival)} &#x2013; ${s.depart?fmt(s.depart):'Present'}</span>
+        <span class="imm-dur">${s.days}d</span>
+      </div>`;
+    });
+    document.getElementById('immContent').innerHTML = html;
+    document.getElementById('immSync').textContent = 'Live';
+    return { usUsed, caUsed, usLeft:LIMIT-usUsed, caLeft:LIMIT-caUsed, usPct };
+  } catch(e) {
+    document.getElementById('immContent').innerHTML = errHTML('Could not load immigration data.');
+    return null;
+  }
+}
+// ── TRAVEL ───────────────────────────────────────────────────────────────
+async function loadTravel() {
+  try {
+    const rows = await fetchSheet('✈️ Travel');
+    // cols: 1=Traveler,2=Destination,3=Departure,4=Return,5=Type,6=Nights,7=Notes
+    const trips = rows.map(r=>({
+      traveler: r[1]||'',
+      dest:     r[2]||'',
+      dep:      parseDate(r[3]),
+      ret:      parseDate(r[4]),
+      type:     (r[5]||'').toLowerCase(),
+      notes:    r[7]||''
+    })).filter(t=>t.dest&&t.dep);
+    trips.sort((a,b)=>a.dep-b.dep);
+    const upcoming = trips.filter(t=>!t.ret||t.ret>=today);
+    const totalNights = trips.reduce((s,t)=>s+(t.ret&&t.dep?diff(t.dep,t.ret):0),0);
+    const countrySet = new Set(trips.map(t=>t.dest.split(',').pop().trim()));
+    let html = '<div class="travel-timeline">';
+    const show = upcoming.slice(0,5);
+    if (!show.length) {
+      html += '<div style="color:var(--text-dim);font-size:10px;padding:16px 0 16px 14px;">No upcoming trips logged yet.</div>';
+    }
+    show.forEach(t => {
+      const isCurrent = t.dep<=today&&(!t.ret||t.ret>=today);
+      const nights = t.ret?diff(t.dep,t.ret):null;
+      const typeKey = t.type.replace(/\s+/g,'-')||'personal';
+      html += `<div class="trip-item ${isCurrent?'current':''}">
+        <div class="trip-date">${fmt(t.dep)}${t.ret?' &#x2014; '+fmt(t.ret):''}</div>
+        <div class="trip-dest">${t.dest}</div>
+        <div class="trip-meta">
+          ${isCurrent?'<span class="trip-tag trip-tag-current">Current</span>':`<span class="trip-tag trip-tag-${typeKey}">${t.type||'Trip'}</span>`}
+          ${nights?`<span class="trip-notes">${nights} nights</span>`:''}
+          ${t.notes?`<span class="trip-notes">${t.notes}</span>`:''}
+        </div>
+      </div>`;
+    });
+    html += `</div>
+    <div class="travel-stats">
+      <div class="stat-block"><span class="stat-num">${upcoming.length}</span><span class="stat-label">Upcoming</span></div>
+      <div class="stat-block"><span class="stat-num">${countrySet.size}</span><span class="stat-label">Countries</span></div>
+      <div class="stat-block"><span class="stat-num">${totalNights}</span><span class="stat-label">Nights planned</span></div>
+    </div>`;
+    document.getElementById('travelContent').innerHTML = html;
+    document.getElementById('travelSync').textContent = 'Live';
+    return { nextTrip: upcoming[0]||null };
+  } catch(e) {
+    document.getElementById('travelContent').innerHTML = errHTML('Could not load travel data.');
+    return null;
+  }
+}
+// ── PROJECTS ─────────────────────────────────────────────────────────────
+async function loadProjects() {
+  try {
+    const rows = await fetchSheet('📋 Projects');
+    // cols: 1=Lead,2=Name,3=Start,4=End,5=Status,6=Duration,7=Notes
+    const projects = rows.map(r=>({
+      lead:   r[1]||'',
+      name:   r[2]||'',
+      start:  parseDate(r[3]),
+      end:    parseDate(r[4]),
+      status: (r[5]||'active').toLowerCase(),
+      notes:  r[7]||''
+    })).filter(p=>p.name&&p.start);
+    const winStart = new Date(today.getFullYear(),today.getMonth(),1);
+    const winEnd   = new Date(today.getFullYear(),today.getMonth()+6,0);
+    const winDays  = diff(winStart,winEnd);
+    const todayPct = (diff(winStart,today)/winDays*100).toFixed(1);
+    const months = [];
+    for(let m=0;m<6;m++){
+      const d = new Date(winStart.getFullYear(),winStart.getMonth()+m,1);
+      months.push(d.toLocaleDateString('en-US',{month:'short'}));
+    }
+    const statusClass = {
+      'active':'status-active','planning':'status-planning','ongoing':'status-ongoing',
+      'upcoming':'status-upcoming','complete':'status-complete','on hold':'status-hold'
+    };
+    let html = `<div class="gantt-header-row" style="display:grid;grid-template-columns:130px repeat(6,1fr);margin-bottom:6px;">
+      <div></div>${months.map(m=>`<div class="gantt-month">${m}</div>`).join('')}
+    </div>`;
+    projects.slice(0,7).forEach(p=>{
+      const s = p.start<winStart?winStart:p.start;
+      const e = !p.end||p.end>winEnd?winEnd:p.end;
+      const left = Math.max(0,diff(winStart,s)/winDays*100);
+      const width = Math.min(100-left,Math.max(4,diff(s,e)/winDays*100));
+      const cls = statusClass[p.status]||'status-active';
+      html += `<div class="gantt-row">
+        <div class="gantt-name" title="${p.lead?p.lead+': ':'' }${p.name}">${p.name}</div>
+        <div class="gantt-track">
+          <div class="gantt-today" style="left:${todayPct}%"></div>
+          <div class="gantt-bar ${cls}" style="left:${left.toFixed(1)}%;width:${width.toFixed(1)}%">${p.name}</div>
+        </div>
+      </div>`;
+    });
+    html += `<div class="gantt-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(196,84,26,0.6)"></div>Active</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(184,150,46,0.6)"></div>Planning</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(42,122,106,0.45)"></div>Upcoming</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(122,90,154,0.6)"></div>Ongoing</div>
+    </div>`;
+    document.getElementById('ganttContent').innerHTML = html;
+    document.getElementById('ganttSync').textContent = 'Live';
+    return { activeCount: projects.filter(p=>p.status==='active').length };
+  } catch(e) {
+    document.getElementById('ganttContent').innerHTML = errHTML('Could not load project data.');
+    return null;
+  }
+}
+// ── GOALS ────────────────────────────────────────────────────────────────
+async function loadGoals() {
+  try {
+    const rows = await fetchSheet('🎯 Goals');
+    // cols: 1=Owner,2=Goal,3=Horizon,4=Progress,5=TargetDate,6=Notes
+    const goals = rows.map(r=>({
+      owner:    r[1]||'',
+      goal:     r[2]||'',
+      horizon:  r[3]||'',
+      progress: parseFloat(r[4])||0,
+      notes:    r[6]||''
+    })).filter(g=>g.goal);
+    let html = '<div class="goals-grid">';
+    goals.slice(0,6).forEach(g=>{
+      const pct = Math.min(100,Math.round(g.progress<=1?g.progress*100:g.progress));
+      html += `<div class="goal-card">
+        <div class="goal-bar" style="transform:scaleX(${pct/100})"></div>
+        <div class="goal-horizon">${g.horizon}</div>
+        <div class="goal-title">${g.goal}</div>
+        <div class="goal-owner">${g.owner}</div>
+        <div class="goal-footer">
+          <span class="goal-pct">${pct}%</span>
+          <span class="goal-next">${g.notes}</span>
+        </div>
+      </div>`;
+    });
+    if(goals.length<4) html+='<div class="goal-add">+ Add goals in Sheet</div>';
+    html+='</div>';
+    document.getElementById('goalsContent').innerHTML = html;
+    document.getElementById('goalsSync').textContent = 'Live';
+    return { total:goals.length, inMotion:goals.filter(g=>{const p=g.progress<=1?g.progress*100:g.progress;return p>10;}).length };
+  } catch(e) {
+    document.getElementById('goalsContent').innerHTML = errHTML('Could not load goals data.');
+    return null;
+  }
+}
+// ── STATUS BAR ───────────────────────────────────────────────────────────
+function buildStatus(imm,travel,projects,goals) {
+  const parts = [];
+  if(imm){
+    if(imm.usPct>0.8) parts.push(`<div class="status-item alert">&#x26A0; US: <strong>${imm.usLeft} days left</strong></div><div class="status-divider"></div>`);
+    else parts.push(`<div class="status-item">&#x1F1FA;&#x1F1F8; US: <strong>${imm.usLeft} days left</strong></div><div class="status-divider"></div>`);
+    parts.push(`<div class="status-item">&#x1F1E8;&#x1F1E6; CA: <strong>${imm.caLeft} days left</strong></div><div class="status-divider"></div>`);
+  }
+  if(travel&&travel.nextTrip){
+    const t=travel.nextTrip;
+    const da=diff(today,t.dep);
+    const when=da===0?'Today':da===1?'Tomorrow':`in ${da} days`;
+    parts.push(`<div class="status-item">Next trip: <strong>${t.dest.split(',')[0]} &#x2014; ${when}</strong></div><div class="status-divider"></div>`);
+  }
+  if(projects) parts.push(`<div class="status-item">Active projects: <strong>${projects.activeCount}</strong></div><div class="status-divider"></div>`);
+  if(goals)    parts.push(`<div class="status-item">Goals in motion: <strong>${goals.inMotion} of ${goals.total}</strong></div>`);
+  document.getElementById('statusBar').innerHTML = parts.join('')||'<div class="status-item">Add data to your Sheet to see the summary here.</div>';
+  document.getElementById('bottomLeft').textContent = `Refreshed at ${new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}`;
+}
+// ── LOAD ALL ─────────────────────────────────────────────────────────────
+async function loadAll() {
+  setSyncing();
+  try {
+    const [imm,travel,projects,goals] = await Promise.all([
+      loadImmigration(), loadTravel(), loadProjects(), loadGoals()
+    ]);
+    buildStatus(imm,travel,projects,goals);
+    setSynced();
+  } catch(e) {
+    setError();
+  }
+}
+// ── INIT ─────────────────────────────────────────────────────────────────
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+document.getElementById('headerDate').textContent=`${DAYS[today.getDay()]}, ${MONTHS[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+loadAll();
+setInterval(loadAll, 5*60*1000);
+</script>
+</body>
+</html>

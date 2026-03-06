@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Race — Wireframe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F0E0C;
+    --surface: #171613;
+    --surface-2: #1E1C19;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.14);
+    --text: #EDE8DF;
+    --text-dim: rgba(237,232,223,0.45);
+    --text-mid: rgba(237,232,223,0.7);
+    /* Module accent colors */
+    --immigration: #C4541A;
+    --immigration-soft: rgba(196,84,26,0.12);
+    --travel: #2A7A6A;
+    --travel-soft: rgba(42,122,106,0.12);
+    --gantt: #B8962E;
+    --gantt-soft: rgba(184,150,46,0.12);
+    --goals: #7A5A9A;
+    --goals-soft: rgba(122,90,154,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+  .logo {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .logo span {
+    color: var(--immigration);
+  }
+  .header-date {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .avatar-group {
+    display: flex;
+    align-items: center;
+    gap: -4px;
+  }
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .avatar-1 { background: var(--immigration); color: #fff; margin-right: -8px; }
+  .avatar-2 { background: var(--travel); color: #fff; }
+  .live-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--travel);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  /* WIREFRAME LABEL */
+  .wireframe-banner {
+    background: rgba(184,150,46,0.08);
+    border-bottom: 1px solid rgba(184,150,46,0.2);
+    padding: 8px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gantt);
+  }
+  .wireframe-banner::before {
+    content: '⬡';
+    font-size: 11px;
+  }
+  /* MAIN LAYOUT */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1px;
+    background: var(--border);
+    min-height: calc(100vh - 100px);
+  }
+  /* MODULE BASE */
+  .module {
+    background: var(--surface);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .module::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+  .module-immigration::before { background: var(--immigration); }
+  .module-travel::before { background: var(--travel); }
+  .module-gantt::before { background: var(--gantt); }
+  .module-goals::before { background: var(--goals); }
+  .module-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .module-tag {
+    font-size: 8.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 1px;
+  }
+  .tag-immigration { background: var(--immigration-soft); color: var(--immigration); }
+  .tag-travel { background: var(--travel-soft); color: var(--travel); }
+  .tag-gantt { background: var(--gantt-soft); color: var(--gantt); }
+  .tag-goals { background: var(--goals-soft); color: var(--goals); }
+  .module-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    flex: 1;
+  }
+  .module-note {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .module-note:hover { color: var(--text-mid); }
+  /* ---- IMMIGRATION MODULE ---- */
+  .imm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .country-block {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 18px;
+    border-radius: 2px;
+    position: relative;
+  }
+  .country-flag {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .country-name {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .country-days {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .country-days.warn { color: var(--immigration); }
+  .country-days.ok { color: var(--travel); }
+  .country-limit {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--border-strong);
+    border-radius: 2px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .fill-warn { background: var(--immigration); }
+  .fill-ok { background: var(--travel); }
+  .imm-log {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .imm-log-label {
+    font-size: 8.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .imm-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+  }
+  .imm-entry:last-child { border-bottom: none; }
+  .imm-flag { font-size: 13px; }
+  .imm-dates { color: var(--text-mid); flex: 1; }
+  .imm-dur {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text);
+  }
+  .imm-note-inline {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+  .add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--immigration);
+    cursor: pointer;
+    border: 1px solid rgba(196,84,26,0.3);
+    padding: 6px 12px;
+    border-radius: 1px;
+    transition: all 0.2s;
+  }
+  .add-btn:hover { background: var(--immigration-soft); }
+  /* ---- TRAVEL MODULE ---- */
+  .travel-timeline {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 20px;
+  }
+  .travel-timeline::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--border-strong);
+  }
+  .trip-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 16px;
+  }
+  .trip-item::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--travel);
+    background: var(--bg);
+  }
+  .trip-item.current::before {
+    background: var(--travel);
+  }
+  .trip-date {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .trip-dest {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 3px;
+  }
+  .trip-meta {
+    font-size: 9.5px;
+    color: var(--text-dim);
+    display: flex;
+    gap: 12px;
+  }
+  .trip-tag {
+    padding: 1px 6px;
+    border-radius: 1px;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .trip-tag-work { background: var(--gantt-soft); color: var(--gantt); }
+  .trip-tag-personal { background: var(--travel-soft); color: var(--travel); }
+  .trip-tag-current { background: var(--immigration-soft); color: var(--immigration); }
+  .year-counter {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 4px;
+  }
+  .year-stat {
+    background: var(--surface-2);
+    padding: 12px;
+    border-radius: 2px;
+    text-align: center;
+  }
+  .year-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    display: block;
+    color: var(--travel);
+  }
+  .year-stat-label {
+    font-size: 8.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  /* ---- GANTT MODULE ---- */
+  .gantt-wrap {
+    overflow-x: auto;
+  }
+  .gantt-months {
+    display: grid;
+    grid-template-columns: 140px repeat(6, 1fr);
+    gap: 0;
+    margin-bottom: 6px;
+  }
+  .gantt-month {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 0 4px;
+  }
+  .gantt-month:first-child { text-align: left; }
+  .gantt-today-line {
+    position: relative;
+  }
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 140px repeat(6, 1fr);
+    gap: 0;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  .gantt-project-name {
+    font-size: 10px;
+    color: var(--text-mid);
+    letter-spacing: 0.04em;
+    padding-right: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gantt-cells {
+    grid-column: 2 / -1;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    height: 24px;
+    background: var(--surface-2);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .gantt-bar {
+    position: absolute;
+    height: 100%;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bar-1 { background: rgba(196,84,26,0.6); color: #fff; left: 0; width: 45%; }
+  .bar-2 { background: rgba(42,122,106,0.6); color: #fff; left: 20%; width: 55%; }
+  .bar-3 { background: rgba(184,150,46,0.6); color: #fff; left: 35%; width: 40%; }
+  .bar-4 { background: rgba(122,90,154,0.6); color: #fff; left: 10%; width: 65%; }
+  .bar-5 { background: rgba(196,84,26,0.35); color: var(--text-mid); left: 55%; width: 30%; }
+  .gantt-today {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255,255,255,0.3);
+    left: 33%;
+    z-index: 2;
+  }
+  .gantt-today::before {
+    content: 'TODAY';
+    position: absolute;
+    top: -16px;
+    left: 4px;
+    font-size: 7px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+  }
+  .gantt-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+  }
+  /* ---- GOALS MODULE ---- */
+  .goals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .goal-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .goal-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--goals);
+    opacity: 0.4;
+    transform: scaleX(var(--progress, 0.5));
+    transform-origin: left;
+    transition: transform 0.6s ease;
+  }
+  .goal-horizon {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--goals);
+    margin-bottom: 8px;
+  }
+  .goal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .goal-progress-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    display: flex;
+    justify-content: space-between;
+  }
+  .goal-progress-label span { color: var(--goals); }
+  .goal-add {
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    padding: 16px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    gap: 8px;
+  }
+  .goal-add:hover {
+    border-color: var(--goals);
+    color: var(--goals);
+    background: var(--goals-soft);
+  }
+  /* BOTTOM STATUS BAR */
+  .status-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .status-item strong { color: var(--text-mid); }
+  .status-item.alert { color: var(--immigration); }
+  .status-item.alert strong { color: var(--immigration); }
+  .status-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+  }
+  .status-bar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sheets-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 1px;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+  }
+  .sheets-icon {
+    width: 10px;
+    height: 12px;
+    background: #34A853;
+    border-radius: 1px;
+    display: inline-block;
+  }
+  /* ANNOTATIONS */
+  .annotation {
+    position: absolute;
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    color: var(--gantt);
+    background: rgba(184,150,46,0.08);
+    border: 1px solid rgba(184,150,46,0.2);
+    padding: 4px 8px;
+    border-radius: 1px;
+    max-width: 160px;
+    line-height: 1.4;
+    pointer-events: none;
+  }
+  .annotation::before {
+    content: '↳ ';
+    opacity: 0.6;
+  }
+  /* ENTRY ANIMATIONS */
+  .module {
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+  }
+  .module:nth-child(1) { animation-delay: 0.05s; }
+  .module:nth-child(2) { animation-delay: 0.12s; }
+  .module:nth-child(3) { animation-delay: 0.19s; }
+  .module:nth-child(4) { animation-delay: 0.26s; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 900px) {
+    .dashboard { grid-template-columns: 1fr; }
+    .imm-grid { grid-template-columns: 1fr 1fr; }
+    .goals-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">Life <span>Race</span></div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+  <div class="header-right">
+    <div class="live-dot"><span class="dot"></span> Synced with Google Sheets</div>
+    <div class="avatar-group">
+      <div class="avatar avatar-1">SH</div>
+      <div class="avatar avatar-2">JH</div>
+    </div>
+  </div>
+</div>
+<!-- WIREFRAME NOTICE -->
+<div class="wireframe-banner">
+  Concept wireframe — structure and layout only. Real data will pull from your shared Google Sheet.
+</div>
+<!-- DASHBOARD -->
+<div class="dashboard">
+  <!-- MODULE 1: IMMIGRATION -->
+  <div class="module module-immigration">
+    <div class="module-label">
+      <span class="module-tag tag-immigration">Immigration</span>
+      <span class="module-title">Day Tracker</span>
+      <span class="module-note">+ Add Entry</span>
+    </div>
+    <div class="imm-grid">
+      <div class="country-block">
+        <div class="country-flag">🇺🇸</div>
+        <div class="country-name">United States</div>
+        <div class="country-days warn">147</div>
+        <div class="country-limit">of 182 days allowed / year</div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-warn" style="width: 81%"></div>
+        </div>
+      </div>
+      <div class="country-block">
+        <div class="country-flag">🇨🇦</div>
+        <div class="country-name">Canada</div>
+        <div class="country-days ok">89</div>
+        <div class="country-limit">of 182 days allowed / year</div>
+        <div class="progress-bar">
+          <div class="progress-fill fill-ok" style="width: 49%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="imm-log">
+      <div class="imm-log-label">Recent entries — both travelers</div>
+      <div class="imm-entry">
+        <span class="imm-flag">🇺🇸</span>
+        <span class="imm-dates">Jan 4 – Feb 12, 2026</span>
+        <span class="imm-note-inline">NYC + Miami</span>
+        <span class="imm-dur">39d</span>
+      </div>
+      <div class="imm-entry">
+        <span class="imm-flag">🇨🇦</span>
+        <span class="imm-dates">Feb 13 – Mar 1, 2026</span>
+        <span class="imm-note-inline">Toronto (home base)</span>
+        <span class="imm-dur">16d</span>
+      </div>
+      <div class="imm-entry">
+        <span class="imm-flag">🇺🇸</span>
+        <span class="imm-dates">Mar 2 – present</span>
+        <span class="imm-note-inline">Current stay</span>
+        <span class="imm-dur">4d</span>
+      </div>
+    </div>
+    <div class="add-btn">+ Log a stay</div>
+  </div>
+  <!-- MODULE 2: TRAVEL -->
+  <div class="module module-travel">
+    <div class="module-label">
+      <span class="module-tag tag-travel">Travel</span>
+      <span class="module-title">What's Coming</span>
+      <span class="module-note">+ Add Trip</span>
+    </div>
+    <div class="travel-timeline">
+      <div class="trip-item current">
+        <div class="trip-date">Now — Mar 14</div>
+        <div class="trip-dest">New York City 🇺🇸</div>
+        <div class="trip-meta">
+          <span class="trip-tag trip-tag-current">Current</span>
+          <span>Client meetings + studio time</span>
+        </div>
+      </div>
+      <div class="trip-item">
+        <div class="trip-date">Mar 18 – Mar 25</div>
+        <div class="trip-dest">Mexico City 🇲🇽</div>
+        <div class="trip-meta">
+          <span class="trip-tag trip-tag-personal">Personal</span>
+          <span>Rest + research</span>
+        </div>
+      </div>
+      <div class="trip-item">
+        <div class="trip-date">Apr 3 – Apr 9</div>
+        <div class="trip-dest">Toronto 🇨🇦</div>
+        <div class="trip-meta">
+          <span class="trip-tag trip-tag-work">Work</span>
+          <span>Immigration appt + board mtg</span>
+        </div>
+      </div>
+      <div class="trip-item">
+        <div class="trip-date">May 2026</div>
+        <div class="trip-dest">Europe — TBD ✈️</div>
+        <div class="trip-meta">
+          <span class="trip-tag trip-tag-personal">Personal</span>
+          <span>To be planned</span>
+        </div>
+      </div>
+    </div>
+    <div class="year-counter">
+      <div class="year-stat">
+        <span class="year-stat-num">7</span>
+        <span class="year-stat-label">Trips planned</span>
+      </div>
+      <div class="year-stat">
+        <span class="year-stat-num">4</span>
+        <span class="year-stat-label">Countries</span>
+      </div>
+      <div class="year-stat">
+        <span class="year-stat-num">94</span>
+        <span class="year-stat-label">Days traveling</span>
+      </div>
+    </div>
+  </div>
+  <!-- MODULE 3: GANTT -->
+  <div class="module module-gantt">
+    <div class="module-label">
+      <span class="module-tag tag-gantt">Business</span>
+      <span class="module-title">Project Arc — 2026</span>
+      <span class="module-note">Executive view</span>
+    </div>
+    <div class="gantt-wrap">
+      <div class="gantt-months">
+        <div class="gantt-month">Project</div>
+        <div class="gantt-month">Feb</div>
+        <div class="gantt-month">Mar</div>
+        <div class="gantt-month">Apr</div>
+        <div class="gantt-month">May</div>
+        <div class="gantt-month">Jun</div>
+        <div class="gantt-month">Jul</div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-project-name">Brand Campaign A</div>
+        <div class="gantt-cells">
+          <div class="gantt-today"></div>
+          <div class="gantt-bar bar-1">Brand Campaign A</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-project-name">Client Onboarding</div>
+        <div class="gantt-cells">
+          <div class="gantt-bar bar-2">Client Onboarding</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-project-name">Annual Strategy</div>
+        <div class="gantt-cells">
+          <div class="gantt-bar bar-3">Annual Strategy</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-project-name">New Business Dev</div>
+        <div class="gantt-cells">
+          <div class="gantt-bar bar-4">New Business Dev</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-project-name">Team Expansion</div>
+        <div class="gantt-cells">
+          <div class="gantt-bar bar-5">Team Expansion</div>
+        </div>
+      </div>
+    </div>
+    <div class="gantt-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(196,84,26,0.6)"></div>Active</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(42,122,106,0.6)"></div>In progress</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(184,150,46,0.6)"></div>Planning</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(122,90,154,0.6)"></div>Ongoing</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(196,84,26,0.35)"></div>Future</div>
+    </div>
+  </div>
+  <!-- MODULE 4: GOALS -->
+  <div class="module module-goals">
+    <div class="module-label">
+      <span class="module-tag tag-goals">Life Goals</span>
+      <span class="module-title">The Long Game</span>
+      <span class="module-note">Edit goals</span>
+    </div>
+    <div class="goals-grid">
+      <div class="goal-card" style="--progress: 0.6">
+        <div class="goal-horizon">2026</div>
+        <div class="goal-title">Secure permanent residency (both)</div>
+        <div class="goal-progress-label">Progress <span>60%</span></div>
+      </div>
+      <div class="goal-card" style="--progress: 0.3">
+        <div class="goal-horizon">2026</div>
+        <div class="goal-title">Launch new service line</div>
+        <div class="goal-progress-label">Progress <span>30%</span></div>
+      </div>
+      <div class="goal-card" style="--progress: 0.15">
+        <div class="goal-horizon">3 Year</div>
+        <div class="goal-title">Build a team of 10 with no single point of failure</div>
+        <div class="goal-progress-label">Progress <span>15%</span></div>
+      </div>
+      <div class="goal-add">+ Add a goal</div>
+    </div>
+  </div>
+</div>
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-item alert">⚠ US days: <strong>35 remaining</strong> this year</div>
+  <div class="status-divider"></div>
+  <div class="status-item">Next trip: <strong>Mexico City in 12 days</strong></div>
+  <div class="status-divider"></div>
+  <div class="status-item">Active projects: <strong>5</strong></div>
+  <div class="status-divider"></div>
+  <div class="status-item">Goals on track: <strong>2 of 3</strong></div>
+  <div class="status-bar-right">
+    <div class="sheets-badge">
+      <span class="sheets-icon"></span>
+      Connected to Google Sheets
+    </div>
+  </div>
+</div>
+<script>
+  const now = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('headerDate').textContent =
+    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+</script>
+</body>
+</html>
