@@ -264,7 +264,16 @@ async function loadImmigration() {
   try {
     const rows = await fetchSheet('🛂 Immigration');
     // cols: 1=Person,2=CountryText,3=CountryDrop,4=Arrival,5=Departure,6=Days,7=Notes
-    const totals = {'United States':0,'Canada':0};
+
+    // Read pre-computed totals from Immigration tab M5 (US) and M6 (Canada)
+    const totalsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('🛂 Immigration')}&range=M5:M6`;
+    const totalsRes = await fetch(totalsUrl);
+    const totalsText = await totalsRes.text();
+    const totalsJson = JSON.parse(totalsText.match(/setResponse\(([\s\S]*)\)/)[1]);
+    const totalsRows = totalsJson.table ? (totalsJson.table.rows||[]) : [];
+    const usUsed = Math.round(parseFloat(totalsRows[0]?.c?.[0]?.v) || 0);
+    const caUsed = Math.round(parseFloat(totalsRows[1]?.c?.[0]?.v) || 0);
+
     const stays = [];
     rows.forEach(r => {
       const person  = r[1]||'';
@@ -274,13 +283,8 @@ async function loadImmigration() {
       if (!arrival) return;
       const dep = depart||today;
       const days = diff(arrival, dep);
-      if (arrival.getFullYear()===today.getFullYear() && totals[country]!==undefined) {
-        totals[country]+=days;
-      }
       stays.push({person,country,arrival,depart,days,notes:r[7]||''});
     });
-    const usUsed = Math.round(totals['United States']);
-    const caUsed = Math.round(totals['Canada']);
     const usPct  = usUsed/LIMIT;
     const caPct  = caUsed/LIMIT;
     const recent = stays.filter(s=>s.arrival).sort((a,b)=>b.arrival-a.arrival).slice(0,4);
