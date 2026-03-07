@@ -1,0 +1,93 @@
+{
+  "lastSync": "2026-03-07T00:00:00+00:00",
+  "totalFiles": 6,
+  "categories": ["Curricula", "Guidelines", "Research", "Training Materials"],
+  "types": ["DOCX", "PDF", "PPTX", "XLSX"],
+  "languages": ["English", "French"],
+  "resources": [
+    {
+      "id": "sample-001",
+      "name": "PEN-Plus Clinical Guide v2.pdf",
+      "type": "PDF",
+      "mimeType": "application/pdf",
+      "category": "Guidelines",
+      "subcategory": "Clinical Protocols",
+      "path": "Guidelines/Clinical Protocols",
+      "language": "English",
+      "size": 2450000,
+      "modifiedTime": "2026-02-15T10:30:00Z",
+      "link": "https://drive.google.com/file/d/sample-001/view",
+      "downloadLink": ""
+    },
+    {
+      "id": "sample-002",
+      "name": "NCD Screening Checklist.docx",
+      "type": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "category": "Guidelines",
+      "subcategory": "",
+      "path": "Guidelines",
+      "language": "English",
+      "size": 185000,
+      "modifiedTime": "2026-03-01T14:20:00Z",
+      "link": "https://drive.google.com/file/d/sample-002/view",
+      "downloadLink": ""
+    },
+    {
+      "id": "sample-003",
+      "name": "Module 1 - Introduction to PEN-Plus.pptx",
+      "type": "PPTX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "category": "Training Materials",
+      "subcategory": "Modules",
+      "path": "Training Materials/Modules",
+      "language": "English",
+      "size": 5200000,
+      "modifiedTime": "2026-01-20T09:00:00Z",
+      "link": "https://drive.google.com/file/d/sample-003/view",
+      "downloadLink": ""
+    },
+    {
+      "id": "sample-004",
+      "name": "Guide Clinique PEN-Plus (Français).pdf",
+      "type": "PDF",
+      "mimeType": "application/pdf",
+      "category": "Guidelines",
+      "subcategory": "Clinical Protocols",
+      "path": "Guidelines/Clinical Protocols",
+      "language": "French",
+      "size": 2600000,
+      "modifiedTime": "2026-02-20T11:45:00Z",
+      "link": "https://drive.google.com/file/d/sample-004/view",
+      "downloadLink": ""
+    },
+    {
+      "id": "sample-005",
+      "name": "Diabetes Management Curriculum.pdf",
+      "type": "PDF",
+      "mimeType": "application/pdf",
+      "category": "Curricula",
+      "subcategory": "",
+      "path": "Curricula",
+      "language": "English",
+      "size": 3100000,
+      "modifiedTime": "2026-02-28T16:00:00Z",
+      "link": "https://drive.google.com/file/d/sample-005/view",
+      "downloadLink": ""
+    },
+    {
+      "id": "sample-006",
+      "name": "Site Assessment Data Template.xlsx",
+      "type": "XLSX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "category": "Research",
+      "subcategory": "Data Collection",
+      "path": "Research/Data Collection",
+      "language": "English",
+      "size": 95000,
+      "modifiedTime": "2026-03-05T08:30:00Z",
+      "link": "https://drive.google.com/file/d/sample-006/view",
+      "downloadLink": ""
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEN-Plus Clinical Resource Hub</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <div class="site-title"><a href="index.html">PEN-Plus Resource Hub</a></div>
+        <div class="site-subtitle">Clinical Materials &amp; Training Resources</div>
+      </div>
+      <nav>
+        <a href="index.html" class="active">Browse</a>
+        <a href="updates.html">Recent Updates</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-row">
+        <input type="text" id="search-input" class="search-input"
+               placeholder="Search resources by name, category, or keyword...">
+      </div>
+      <div class="filter-row">
+        <label>Filter by:</label>
+        <select id="filter-category" class="filter-select" data-default="All Categories"></select>
+        <select id="filter-type" class="filter-select" data-default="All Types"></select>
+        <select id="filter-language" class="filter-select" data-default="All Languages"></select>
+        <button id="btn-clear" class="btn-clear">Clear filters</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <span id="stats-count"></span>
+      <span id="sync-info" class="sync-info"></span>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading resources...</p>
+    </div>
+
+    <!-- Resource Grid -->
+    <div id="resource-grid" class="resource-grid"></div>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>ResourceHub.initBrowsePage();</script>
+</body>
+</html>

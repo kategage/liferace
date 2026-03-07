@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recent Updates - PEN-Plus Resource Hub</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <div class="site-title"><a href="index.html">PEN-Plus Resource Hub</a></div>
+        <div class="site-subtitle">Clinical Materials &amp; Training Resources</div>
+      </div>
+      <nav>
+        <a href="index.html">Browse</a>
+        <a href="updates.html" class="active">Recent Updates</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="stats-bar">
+      <h2 style="font-size: 18px; color: var(--text);">Recently Modified Resources</h2>
+      <span id="sync-info" class="sync-info"></span>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading updates...</p>
+    </div>
+
+    <!-- Updates List -->
+    <div id="updates-list" class="updates-list"></div>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>ResourceHub.initUpdatesPage();</script>
+</body>
+</html>

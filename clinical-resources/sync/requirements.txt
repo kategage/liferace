@@ -1,0 +1,2 @@
+# No external dependencies required - uses only Python stdlib
+# (urllib, json, argparse, os, sys, time, datetime)
