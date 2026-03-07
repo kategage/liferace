@@ -237,7 +237,7 @@ function diff(a,b) {
   return Math.max(0, Math.round((b-a)/86400000));
 }
 async function fetchSheet(tab) {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}&tq=select%20*`;
   const res = await fetch(url);
   if (!res.ok) throw new Error('fetch failed');
   const text = await res.text();
