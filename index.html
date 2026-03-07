@@ -243,6 +243,14 @@ async function fetchSheet(tab) {
   const text = await res.text();
   const json = JSON.parse(text.match(/setResponse\(([\s\S]*)\)/)[1]);
   if (!json.table) throw new Error('no table');
+  // DEBUG: log raw column headers and first 3 data rows
+  console.group(`[LifeRace] Sheet: ${tab}`);
+  console.log('COLUMNS:', (json.table.cols||[]).map((c,i)=>i+':'+c.label));
+  console.log('TOTAL ROWS:', (json.table.rows||[]).length);
+  console.log('ROW 0:', (json.table.rows[0]?.c||[]).map(c=>c?.v));
+  console.log('ROW 1:', (json.table.rows[1]?.c||[]).map(c=>c?.v));
+  console.log('ROW 2:', (json.table.rows[2]?.c||[]).map(c=>c?.v));
+  console.groupEnd();
   const rows = [];
   (json.table.rows||[]).forEach((row,i) => {
     if (i < 4) return; // skip 4 header rows
